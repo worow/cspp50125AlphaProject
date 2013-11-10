@@ -77,15 +77,14 @@ int main(int argc, char** argv){
 	int id = 1;
 	while(1){
 		
-		memset(trdmsg, 0, BUFSIZE);
+		
 		memset(record,0,128);
 		reserveSem(semId,PUB_READ_SEM);
 		
 		printf("Trade: %s %s %ld\n",trdmsg->symbol, trdmsg->price, trdmsg->quantity);
-		sprintf(record, "INSERT INTO TRADES (ID, SYMBOL, PRICE, QUANTITY" \
-				"VALUES (%d, %s, %s, %ld);",id++, trdmsg->symbol, trdmsg->price, trdmsg->quantity);
-				
-		rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+		sprintf(record, "INSERT INTO TRADES VALUES (%d, '%s', '%s', %ld);",id++, trdmsg->symbol, trdmsg->price, trdmsg->quantity);
+		printf("%s\n", record);
+		rc = sqlite3_exec(db, record, callback, 0, &zErrMsg);
    		
    		if( rc != SQLITE_OK ){
       		fprintf(stderr, "SQL error: %s\n", zErrMsg);

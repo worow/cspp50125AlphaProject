@@ -26,14 +26,11 @@ int main(int argc, char** argv){
 
 	int semId;
 	semId = init_sem_A();
-	
-	int semIdB;
-	semIdB = init_sem_B();
 
 /*Creating fake trades*/
 
 	int i=1;
-	int k = 0;
+	
 	char sym[16] = "MSFT";
 	char p[10] = "24.5";
 	
@@ -44,15 +41,12 @@ int main(int argc, char** argv){
 	memcpy(trade->price,p,10);
 	trade->quantity = (unsigned long) i;
 	
-	for(k=0;k<5;k++){
+	while(1){
 	    reserveSem(semId,MATCH_WRITE_SEM);
-	    reserveSem(semIdB, MATCH_WRITE_SEM);
-	    memset(trdmsg,0,sizeof(struct TradeMessage));
-	    memcpy(trdmsg,trade,sizeof(TradeMessage));
+		memcpy(trdmsg,trade,sizeof(TradeMessage));
 		releaseSem(semId, PUB_READ_SEM);
-		releaseSem(semIdB, PUB_READ_SEM);
 	    printf("Trade Published %s %s %ld\n", trdmsg->symbol, trdmsg->price, trdmsg->quantity);
-	    trade->quantity = (unsigned long) ++i;
+	    trade->quantity = (unsigned long) i++;
 	}
 
 
